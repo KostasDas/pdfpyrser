@@ -1,5 +1,4 @@
 import PyPDF2
-from pdfpyrser.helpers.config_helper import ConfigHelper
 from pdfpyrser.helpers.regex_matching_helper import RegexMatchingHelper
 
 
@@ -7,22 +6,9 @@ class PdfParser:
 
     def __init__(self):
         self.reader = None
-        self.config_helper = ConfigHelper()
         self.before_chapter = ''
         self.after_chapter = '\s\D.+?(\d{1,3})'
         self.matcher = RegexMatchingHelper()
-
-    def from_config(self, config_file: str, section: str, section_key: str):
-        """
-        See parent method
-        :param config_file:
-        :param section:
-        :param section_key:
-        :return:
-        """
-        self.config_helper.source(config_file).section(section)
-        self.reader = PyPDF2.PdfFileReader(open(self.config_helper.get_section_value(section_key, True), 'rb'))
-        return self
 
     def from_location(self, file_path: str):
         """
@@ -45,7 +31,7 @@ class PdfParser:
         if page_start > page_end:
             page_start, page_end = self.__swap_pages(page_start, page_end)
 
-        matches = (self.matcher.match(self.reader.getPage(i).extractText(), rule) for i in range(page_start, page_end))
+        matches = (match(self.reader.getPage(i).extractText(), rule) for i in range(page_start, page_end))
         return [item for sublist in matches for item in sublist]
 
     def __validate_pages(self, page_1: int, page_2: int):
