@@ -1,5 +1,5 @@
 import PyPDF2
-from pdfpyrser.helpers.regex_matching_helper import RegexMatchingHelper
+from pdfpyrser.helpers.RegexMatchingHelper import RegexMatchingHelper
 
 
 class PdfParser:
@@ -31,7 +31,7 @@ class PdfParser:
         if page_start > page_end:
             page_start, page_end = self.__swap_pages(page_start, page_end)
 
-        matches = (match(self.reader.getPage(i).extractText(), rule) for i in range(page_start, page_end))
+        matches = (match(self.reader.getPage(i).extract_text(), rule) for i in range(page_start, page_end))
         return [item for sublist in matches for item in sublist]
 
     def __validate_pages(self, page_1: int, page_2: int):
